@@ -1,0 +1,1 @@
+export type TMethod = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
