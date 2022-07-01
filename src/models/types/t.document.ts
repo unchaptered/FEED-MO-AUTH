@@ -1,0 +1,1 @@
+export type TDocument = globalThis.Realm.Services.MongoDB.Document;
