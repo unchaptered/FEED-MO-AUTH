@@ -1,29 +1,44 @@
+import * as Realm from 'realm-web';
+
+import * as utils from './utils/response.utils';
+import * as guards from './utils/gaurd.utils';
+// import { Method, Document, IAccount, IFeedback } from './models/models.loader';
+
 /**
- * Welcome to Cloudflare Workers! This is your first worker.
- *
- * - Run `wrangler dev src/index.ts` in your terminal to start a development server
- * - Open a browser tab at http://localhost:8787/ to see your worker in action
- * - Run `wrangler publish src/index.ts --name my-worker` to publish your worker
- *
- * Learn more at https://developers.cloudflare.com/workers/
+ * Wrangler can have Global Durable Object of Env.
+ * And Cloudlfare Worker can have KV(Durable Object).
+ * 
+ * In these Variables is exists in wrangler.toml.
  */
- export interface Env {
-    // Example binding to KV. Learn more at https://developers.cloudflare.com/workers/runtime-apis/kv/
-    // MY_KV_NAMESPACE: KVNamespace;
-    //
-    // Example binding to Durable Object. Learn more at https://developers.cloudflare.com/workers/runtime-apis/durable-objects/
-    // MY_DURABLE_OBJECT: DurableObjectNamespace;
-    //
-    // Example binding to R2. Learn more at https://developers.cloudflare.com/workers/runtime-apis/r2/
-    // MY_BUCKET: R2Bucket;
-  }
+interface Bindings {
+
+  REALM_APPID: string;
+
+}
+
+let Application: Realm.App;
+const ObjectID = Realm.BSON.ObjectID;
+
+
+const worker: ExportedHandler<Bindings> = {
+
+ async fetch(req, env) {
+
+  const url = new URL(req.url);
+
+  const path = guards.unhandlePathGuard( url.pathname.replace(/[/]$/, '') );
+  const method = guards.unhandleMethodGaurd( req.method );
+
+  const search = url.searchParams.get('target');
   
-  export default {
-    async fetch(
-      request: Request,
-      env: Env,
-      ctx: ExecutionContext
-    ): Promise<Response> {
-      return new Response("Hello World!");
-    },
-  };
+  Application = Application || new Realm.App(env.REALM_APPID);
+
+  console.log(Application);
+
+
+  return utils.toError('OIOI');
+
+ }
+}
+
+export default worker;
